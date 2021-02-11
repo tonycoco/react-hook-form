@@ -480,6 +480,7 @@ export const useFieldArray = <
   }, [fields, name]);
 
   React.useEffect(() => {
+    let isMounted = true;
     const resetFunctions = resetFieldArrayFunctionRef.current;
     const fieldArrayNames = fieldArrayNamesRef.current;
 
@@ -494,12 +495,15 @@ export const useFieldArray = <
           data || defaultValuesRef.current,
           name,
         );
-        setFields(mapIds(memoizedDefaultValues.current, keyName));
+        if (isMounted) {
+          setFields(mapIds(memoizedDefaultValues.current, keyName));
+        }
       };
     }
 
     return () => {
       if (process.env.NODE_ENV !== 'production') {
+        isMounted = false;
         return;
       }
 
